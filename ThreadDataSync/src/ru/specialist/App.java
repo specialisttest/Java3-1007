@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class Sync {
+	public ThreadLocal<Integer> local;
+	
+	
 	private volatile int counter = 0;
 	
 	public synchronized void increment() {
@@ -52,12 +55,16 @@ public class App {
 		//Object sync = new Object();
 		Sync sync = new Sync();
 		AtomicInteger counter = new AtomicInteger();
-		
+		sync.local = new ThreadLocal<Integer>(); 
+		sync.local.set(0);
 		
 		Thread t0 = new Thread(() ->{
+			sync.local = new ThreadLocal<Integer>();
+			sync.local.set(0);
 			for(int i=1; i <= 1000000; i++) {
 				sync.increment();
 				counter.incrementAndGet();
+				//sync.local.set(sync.local.get()+1);
 //				synchronized(sync)	{
 //					sync.counter++; //counter = counter + 1;
 //				}
@@ -66,11 +73,16 @@ public class App {
 				//counter++;
 				//out.printf("%s %d\n", Thread.currentThread().getName(), i);
 			}
+			out.printf("After for %s %d\n", Thread.currentThread().getName(), sync.local.get());
+			
 		});		
 		Thread t1 = new Thread(() ->{
+			sync.local = new ThreadLocal<Integer>();
+			sync.local.set(0);
 			for(int i=1; i <= 1000000; i++) {
 				sync.increment();
 				counter.incrementAndGet();
+				sync.local.set(sync.local.get()+1);
 //				synchronized(sync)
 //				{
 //					sync.counter++; //counter++; 
@@ -78,6 +90,7 @@ public class App {
 				
 				//out.printf("%s %d\n", Thread.currentThread().getName(), i);
 			}
+			out.printf("After for %s %d\n", Thread.currentThread().getName(), sync.local.get());
 		});	
 		
 		t0.start();
@@ -89,6 +102,7 @@ public class App {
 //		out.println(sync.counter);
 		out.println(sync.getCounter());
 		out.println(counter.get());
+		out.printf("Main %s %d\n", Thread.currentThread().getName(), sync.local.get());
 
 	}
 
