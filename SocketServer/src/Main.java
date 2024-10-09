@@ -4,13 +4,6 @@ import java.nio.charset.Charset;
 
 import static java.lang.System.out;
 
-/*
- * Лабораторная 1.4
- * Переделать SocketServer в многопоточный вариант,
- * чтобы он мог надёжно обработать 100 запросов одновременно,
- * используя пулы потоков.
- * 
- */
 
 public class Main {
 
@@ -27,6 +20,7 @@ public class Main {
 		{
 			Socket cs = ss.accept();
 			
+			// create task
 			out.printf("Accept connection from %s\n",
 					cs.getInetAddress().toString());
 			
@@ -37,7 +31,7 @@ public class Main {
 			String s = reader.readLine();
 			
 			out.printf("%s . %d\n",s,++req);
-			Thread.sleep(100);
+			//Thread.sleep(100);
 			
 			OutputStreamWriter writer = new OutputStreamWriter(
 					cs.getOutputStream(),

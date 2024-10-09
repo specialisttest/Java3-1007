@@ -88,7 +88,7 @@ public class Program {
 		//			Runtime.getRuntime().availableProcessors()
 		//			)));
 		return ForkJoinPool.commonPool().invoke(
-			new WeightCounter(root, 6));
+			new WeightCounter(root, Runtime.getRuntime().availableProcessors()));
 	}
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
@@ -104,7 +104,7 @@ public class Program {
 		
 		System.out.printf("Tree created with total weight: %d\n",total);
 		
-		weightTree(root);weightTree(root); // PROFILING
+		//weightTree(root);weightTree(root); // PROFILING
 		
 		long t1 = System.currentTimeMillis();
 		int r1 = weightTree(root); 
@@ -112,12 +112,35 @@ public class Program {
 		System.out.printf("Single weight: %d Time %d\n", r1, t2-t1);
 		
 		
-		weightTreeMulti(root);weightTreeMulti(root); // PROFILING
+		//weightTreeMulti(root);weightTreeMulti(root); // PROFILING
 		
 		long t3 = System.currentTimeMillis();
 		int r2 = weightTreeMulti(root);
 		long t4 = System.currentTimeMillis();
 		System.out.printf("Multi weight: %d Time %d\n", r2, t4-t3);
+		
+		/*var task = new ForkJoinTask<Double>() {
+			double r;
+			@Override
+			public Double getRawResult() {
+				
+				return r;
+			}
+
+			@Override
+			protected void setRawResult(Double value) {
+				r = value;
+				
+			}
+
+			@Override
+			protected boolean exec() {
+				r = ...;
+				return true;
+			}
+			
+			
+		};*/
 		
 
 	}

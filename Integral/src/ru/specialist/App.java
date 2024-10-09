@@ -3,7 +3,10 @@ package ru.specialist;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleFunction;
 
 public class App {
@@ -44,6 +47,43 @@ public class App {
 		p.shutdown();
 		
 		return summa;
+	}
+	
+	public static double multiThread2(DoubleFunction<Double> f, double a, double b) throws InterruptedException, ExecutionException {
+		double h = (b-a) / TASKS;
+		
+		ForkJoinTask<Double>[] tasks = new ForkJoinTask[TASKS];
+		
+		var p = new ForkJoinPool();
+		p.execute(()->{
+			for(int i=0; i < TASKS; i++) {
+				double ax = a + h*i;
+				double bx = ax + h;
+				var task = new ForkJoinTask<Double>() {
+					double r;
+					@Override
+					public Double getRawResult() {return r;}
+					@Override
+					protected void setRawResult(Double value) {r=value;}
+					@Override
+					protected boolean exec() {
+						r = singleThread(f, ax, bx, STEPS/TASKS);
+						System.out.println(Thread.currentThread().getName());
+						return true;
+					}
+				};
+				task.fork();
+				tasks[i] = task;
+			}
+			
+		});
+		p.shutdown();
+		p.awaitTermination(1000, TimeUnit.MILLISECONDS);
+		double sum=0d; 
+		for(var t : tasks)
+			sum += t.join();
+		
+		return sum;
 	}	
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
@@ -67,6 +107,11 @@ public class App {
 		double r2 = multiThread(Math::sin, 0, Math.PI/2);
 		long t4 = System.currentTimeMillis();
 		System.out.printf("Multi  Thread: %f Time: %d\n", r2, t4-t3);
+		
+		long t5 = System.currentTimeMillis();
+		double r3 = multiThread2(Math::sin, 0, Math.PI/2);
+		long t6 = System.currentTimeMillis();
+		System.out.printf("Multi  Thread: %f Time: %d\n", r3, t6-t5);			
 	}
 
 }
