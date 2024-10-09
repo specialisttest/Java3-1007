@@ -1,0 +1,43 @@
+1:1
+1:M (M:1) master-detail
+M:M
+
+database schema
+
+Student
+------------------------------------------------------
+НПаспорта(PK)	ФИО		ДатаР.		
+------------------------------------------------------
+1234		Иванов		18.09.1982	
+4567		Петров		05.05.1992	
+9876		Сидоров		NULL		
+
+Course
+--------------------------------
+id(PK)	Title		Duration
+--------------------------------
+1	Java 1		40
+2	Java 2		40
+3	Spring 		40
+4	Pattern OOP	24
+
+CourseStudent
+НПаспорта(FK)	CourseID(FK)
+----------------------------
+1234		3
+1234		4
+4567		3
+9876		4
+
+SQL = DDL + DML + DCL
+
+Oracle (PL/SQL)
+MS SQL Server (T-SQL)
+MySQL (MySQL)
+PostgreSQL
+
+
+
+
+
+
