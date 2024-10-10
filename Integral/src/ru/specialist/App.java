@@ -8,6 +8,7 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleFunction;
+import java.util.stream.Stream;
 
 public class App {
 	
@@ -85,6 +86,23 @@ public class App {
 		
 		return sum;
 	}	
+	
+	public static double multiThread3(DoubleFunction<Double> f, double a, double b) {
+		record Pair(double ax, double bx) {}
+		
+		double w = (b-a) / TASKS;
+		//Stream.Builder<Pair> sb = Stream.<Pair>builder();
+		var sb = Stream.<Pair>builder();
+		for(int i = 0; i < TASKS; i++)
+			sb.add(new Pair(a + w * i, a + w *(i+1)));
+		
+		return sb.build()
+				.parallel()
+				.mapToDouble( p->singleThread(f, p.ax(), p.bx(), STEPS/TASKS) )
+				.sum();
+		
+		
+	}
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		int a = 5;
@@ -111,7 +129,12 @@ public class App {
 		long t5 = System.currentTimeMillis();
 		double r3 = multiThread2(Math::sin, 0, Math.PI/2);
 		long t6 = System.currentTimeMillis();
-		System.out.printf("Multi  Thread: %f Time: %d\n", r3, t6-t5);			
+		System.out.printf("Multi  Thread: %f Time: %d\n", r3, t6-t5);
+		
+		long t7 = System.currentTimeMillis();
+		double r4 = multiThread3(Math::sin, 0, Math.PI/2);
+		long t8 = System.currentTimeMillis();
+		System.out.printf("Multi  Thread: %f Time: %d\n", r4, t8-t7);			
 	}
 
 }

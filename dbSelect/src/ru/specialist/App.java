@@ -12,12 +12,21 @@ public class App {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Class.forName(DRIVER_NAME); // load and auto-registered driver
 		
-		System.out.print("Поиск курсов: ");
-		String search = new Scanner(System.in).nextLine();
-		//String search = "основы";
-		//String search = "'OR 1 UNION (SELECT 'Hacker' AS title, 0 AS length) ORDER BY length -- ";
-		
 		try(Connection conn = DriverManager.getConnection(CONNECTION_STRING)) {
+			
+			//CallableStatement sp = conn.prepareCall("? = call countCourses( ? )");
+			CallableStatement sp = conn.prepareCall("call countCourses( ? )");
+			// IN, INOUT
+			//sp.set..(1, value)
+			sp.execute();
+			// OUT, INOUT
+			int countCourses = sp.getInt(1);
+			System.out.printf("Всего курсов: %d\n", countCourses);
+			
+			System.out.print("Поиск курсов: ");
+			String search = new Scanner(System.in).nextLine();
+			//String search = "основы";
+			//String search = "'OR 1 UNION (SELECT 'Hacker' AS title, 0 AS length) ORDER BY length -- ";
 			
 			/*
 			// BAD: SQL injection + degrade perfomance
