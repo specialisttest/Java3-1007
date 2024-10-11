@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.specialist.webbrowser.MainWinController">
+   <center>
+      <WebView fx:id="browser" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <BorderPane prefHeight="32.0" BorderPane.alignment="CENTER">
+         <right>
+            <Button mnemonicParsing="false" onAction="#GO" text="GO" BorderPane.alignment="CENTER" />
+         </right>
+         <center>
+            <TextField fx:id="txtURL" prefHeight="22.0" prefWidth="429.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </top>
+</BorderPane>
